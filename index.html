@@ -32,24 +32,31 @@ const firebaseConfig = {
         const db = getFirestore(app);
 
         // 조회 함수를 전역으로 설정
-        window.searchChairman = async () => {
-            const year = document.getElementById('yearInput').value;
-            const resultDiv = document.getElementById('result');
+window.searchChairman = async () => {
+    const year = document.getElementById('yearInput').value;
+    const resultDiv = document.getElementById('result');
 
-            try {
-                const docRef = doc(db, "insa", year);
-                const docSnap = await getDoc(docRef);
+    if (!year) {
+        alert("년도를 입력하세요!");
+        return;
+    }
 
-                if (docSnap.exists()) {
-                    resultDiv.innerText = `${year}년 회장: ${docSnap.data().chairman}`;
-                } else {
-                    resultDiv.innerText = "데이터가 없습니다.";
-                }
-            } catch (e) {
-                console.error(e);
-                resultDiv.innerText = "오류가 발생했습니다.";
-            }
-        };
+    resultDiv.innerText = "조회 중...";
+
+    try {
+        const docRef = doc(db, "insa", year);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            resultDiv.innerText = `${year}년 회장: ${docSnap.data().chairman}`;
+        } else {
+            resultDiv.innerText = "데이터가 없습니다.";
+        }
+    } catch (e) {
+        console.error(e);
+        resultDiv.innerText = "오류 발생: " + e.message;
+    }
+};
     </script>
 </body>
 </html>
