@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Insa App</title>
+    <title>인사 조회</title>
+    <meta charset="utf-8">
 </head>
 <body>
-    <div id="root"></div>
+    <h2>인사 정보 조회</h2>
+    <input type="text" id="yearInput" placeholder="기준년도(예: 2024)">
+    <button onclick="searchChairman()">조회</button>
+    <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+    <!-- Firebase SDK 로드 (간편 버전) -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getFirestore, doc, getDoc } from "https://gstatic.com";
+
+        // 본인의 Firebase Config를 여기에 넣으세요
+        const firebaseConfig = {
+            apiKey: "본인의값",
+            authDomain: "본인의값",
+            projectId: "본인의값",
+            storageBucket: "본인의값",
+            messagingSenderId: "본인의값",
+            appId: "본인의값"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 조회 함수를 전역으로 설정
+        window.searchChairman = async () => {
+            const year = document.getElementById('yearInput').value;
+            const resultDiv = document.getElementById('result');
+
+            try {
+                const docRef = doc(db, "insa", year);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    resultDiv.innerText = `${year}년 회장: ${docSnap.data().chairman}`;
+                } else {
+                    resultDiv.innerText = "데이터가 없습니다.";
+                }
+            } catch (e) {
+                console.error(e);
+                resultDiv.innerText = "오류가 발생했습니다.";
+            }
+        };
+    </script>
 </body>
 </html>
