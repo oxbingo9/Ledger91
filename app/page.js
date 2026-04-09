@@ -1,9 +1,10 @@
+
+
 "use client";
 import { useEffect, useState } from "react";
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBi82idZAraoDMEMVBhVv66tURB0lSI0UM",
   authDomain: "ledger91-e95ea.firebaseapp.com",
@@ -53,7 +54,7 @@ export default function Home() {
       try {
         const snapshot = await getDocs(collection(db, "data"));
         const all = snapshot.docs.map(doc => doc.data());
-        const filtered = all.filter(item => String(item.DATE).startsWith(selectedYear));
+        const filtered = all.filter(item => String(item.DATE).includes(selectedYear));
         setItems(filtered);
       } catch (e) {
         console.error(e);
@@ -61,6 +62,17 @@ export default function Home() {
     }
     fetchItems();
   }, [selectedYear]);
+
+  function formatDate(dateStr) {
+    try {
+      const d = new Date(dateStr);
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${m}/${day}`;
+    } catch {
+      return dateStr;
+    }
+  }
 
   function checkAdmin(val) {
     setPw(val);
@@ -135,7 +147,7 @@ export default function Home() {
                   ? <tr><td colSpan={3} className="empty">내역 없음</td></tr>
                   : inItems.map((item, i) => (
                     <tr key={i}>
-                      <td className="col-date">{String(item.DATE).substring(5)}</td>
+                      <td className="col-date">{formatDate(item.DATE)}</td>
                       <td className="col-desc">{item.DESC}</td>
                       <td className="col-amt plus">{Number(item.AMT).toLocaleString()}</td>
                     </tr>
@@ -154,7 +166,7 @@ export default function Home() {
                   ? <tr><td colSpan={3} className="empty">내역 없음</td></tr>
                   : outItems.map((item, i) => (
                     <tr key={i}>
-                      <td className="col-date">{String(item.DATE).substring(5)}</td>
+                      <td className="col-date">{formatDate(item.DATE)}</td>
                       <td className="col-desc">{item.DESC}</td>
                       <td className="col-amt minus">{Number(item.AMT).toLocaleString()}</td>
                     </tr>
