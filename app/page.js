@@ -423,11 +423,11 @@ export default function Home() {
                 <div style={{fontSize:"11px", color:"#888"}}>총 {members.length}명</div>
               </div>
 
-              <div className="frame">
-                <div className="frame-header">
-                  <div className="frame-title-member">👥 회원목록</div>
-                  {isAdmin && <button className="add-btn" style={{background:"#6f42c1"}} onClick={() => setShowMemberForm(!showMemberForm)}>+</button>}
-                </div>
+                {isAdmin && (
+                  <div style={{textAlign:"right", marginBottom:"10px"}}>
+                    <button className="add-btn" style={{background:"#6f42c1", marginLeft:"auto"}} onClick={() => setShowMemberForm(!showMemberForm)}>+</button>
+                  </div>
+                )}
 
                 {showMemberForm && (
                   <div className="input-form">
