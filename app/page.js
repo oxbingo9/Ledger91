@@ -76,11 +76,10 @@ export default function Home() {
 
   useEffect(() => { fetchItems(); }, [selectedYear]);
 useEffect(() => {
-  navigator.geolocation.getCurrentPosition(async (pos) => {
+  async function fetchWeather() {
     try {
-      const { latitude, longitude } = pos.coords;
       const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=auto`
+        `https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&current=temperature_2m,weathercode&timezone=Asia/Seoul`
       );
       const data = await res.json();
       const code = data.current.weathercode;
@@ -94,7 +93,8 @@ useEffect(() => {
         code <= 82 ? "🌦️" : "⛈️";
       setWeather({ icon, temp });
     } catch (e) { console.error(e); }
-  });
+  }
+  fetchWeather();
 }, []);
   async function fetchMembers() {
     setMembersLoading(true);
